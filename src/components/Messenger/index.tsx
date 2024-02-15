@@ -36,14 +36,21 @@ const Home = (props: Props) => {
         sendMessage,
     } = props;
     const [messageText, setmessageText] = React.useState('');
+    const messagesListRef = React.useRef(null);
 
     React.useEffect(() => {
         getMessagesList();
     }, []);
     
+    React.useEffect(() => {
+        if (messagesListRef.current) {
+          messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
+        }
+      }, [messages]);
+    
     return (
         <div className={styles.root}>
-            <ul className={styles.messagesList}>
+            <ul className={styles.messagesList} ref={messagesListRef}>
                 {
                     messages === null
                         ? <li className={styles.noMessage}>Загрузка...</li>
