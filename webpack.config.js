@@ -5,20 +5,22 @@ module.exports = {
   mode: "development",
   output: {
     filename: "./main.js",
-    chunkFilename: "[name].bundle.js"
+    chunkFilename: "[name].bundle.js",
   },
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
     compress: true,
     port: 3000,
-    watchContentBase: true,
-    progress: true
+    // watchContentBase: true,
+    // progress: true,
   },
   plugins: [
     new MiniCssExtractPlugin({
       filename: "[name].css",
-      chunkFilename: "[id].css"
-    })
+      chunkFilename: "[id].css",
+    }),
   ],
   module: {
     rules: [
@@ -26,15 +28,15 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: "babel-loader",
+        },
       },
       {
         test: /\.tsx?$/,
         exclude: /(node_modules)/,
         use: {
-          loader: "ts-loader"
-        }
+          loader: "ts-loader",
+        },
       },
       {
         test: /\.css$/,
@@ -43,19 +45,19 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: true
-            }
-          }
-        ]
+              modules: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ["file-loader"]
-      }
-    ]
+        use: ["file-loader"],
+      },
+    ],
   },
   resolve: {
-    modules: ['node_modules', 'src'],
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    modules: ["node_modules", "src"],
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
 };
