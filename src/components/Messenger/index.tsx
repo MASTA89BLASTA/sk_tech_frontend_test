@@ -16,6 +16,7 @@ export interface Props {
 
     getMessagesList: Function
     sendMessage: Function
+    changeUsername: Function
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -25,7 +26,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getMessagesList: () => dispatch(mainActions.mainMessagesListFetch()),
-    sendMessage: (messageText: string) => dispatch(mainActions.mainSendMessage(messageText)),
+    sendMessage: (messageText: string, username: string) => dispatch(mainActions.mainSendMessage(messageText, username)),
+    changeUsername: (newUsername: string) => dispatch(mainActions.mainChangeUsername(newUsername)),
 });
 
 const Home = (props: Props) => {
@@ -34,6 +36,7 @@ const Home = (props: Props) => {
         messages,
         getMessagesList,
         sendMessage,
+        changeUsername
     } = props;
     const [messageText, setmessageText] = React.useState('');
     const messagesListRef = React.useRef(null);
@@ -47,6 +50,17 @@ const Home = (props: Props) => {
           messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
         }
       }, [messages]);
+    
+    const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        changeUsername(event.target.value);
+    };
+    const handleMessageSend = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (messageText) {
+            sendMessage(messageText, username);
+            setmessageText('');
+        }
+    };
     
     return (
         <div className={styles.root}>
@@ -79,7 +93,7 @@ const Home = (props: Props) => {
                         : null
                 }
             </ul>
-            <form className={styles.newMessagePanel}>
+            <form className={styles.newMessagePanel} onSubmit={handleMessageSend}>
                 <div className={styles.usernameContainer}>
                     <label
                         className={styles.usernameLabel}
@@ -92,6 +106,7 @@ const Home = (props: Props) => {
                         value={username}
                         className={styles.usernameValue}
                         size={10}
+                        onChange={handleUsernameChange}
                     />
                 </div>
                 <input
@@ -104,13 +119,7 @@ const Home = (props: Props) => {
                     autoFocus
                 />
                 <button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        if (messageText) {
-                            sendMessage(messageText);
-                            setmessageText('');
-                        }
-                    }}
+                    
                     className={styles.messageSendButton}
                 >
                     <img
