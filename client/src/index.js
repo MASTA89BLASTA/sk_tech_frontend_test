@@ -8,6 +8,7 @@ import rootSaga from './sagas';
 import Messenger from './components/Messenger';
 import './index.css';
 
+
 try {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(reducers, applyMiddleware(sagaMiddleware));

@@ -10,6 +10,7 @@ import {
 import { MessagesList } from '../../types';
 import styles from './styles.css';
 
+
 export interface Props {
     username: string
     messages: MessagesList

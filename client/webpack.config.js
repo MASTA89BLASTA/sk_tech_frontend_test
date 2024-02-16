@@ -1,5 +1,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+const SERVER_URL = "http://localhost:4000";
 module.exports = {
   entry: "./src/index.js",
   mode: "development",
@@ -11,11 +13,18 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "dist"),
     },
-    compress: true,
     port: 3000,
+    compress: true,
     // watchContentBase: true,
     // progress: true,
+    proxy: {
+      "/api": {
+        target: SERVER_URL,
+        changeOrigin: true,
+      },
+    },
   },
+
   plugins: [
     new MiniCssExtractPlugin({
       filename: "[name].css",
