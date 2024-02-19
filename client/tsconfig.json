@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "baseUrl": "client/src",
+    "baseUrl": "client/src"
   },
   "exclude": ["node_modules"]
 }

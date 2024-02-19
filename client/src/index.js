@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
@@ -14,11 +14,11 @@ try {
   const store = createStore(reducers, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(rootSaga);
   
-  ReactDOM.render(
+  ReactDOM.createRoot(document.querySelector("#root")).render(
     <Provider store={store}>
       <Messenger />
     </Provider>,
-    document.querySelector("#root")
+    
   );
 } catch (error) {
   console.log('Error!', error)
