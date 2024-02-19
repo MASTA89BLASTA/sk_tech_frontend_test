@@ -45,6 +45,7 @@ const main = (state = initialState, action: TAction) => {
       const messageList = [
         ...(newState.messagesList ? newState.messagesList : []),
         {
+          id: Date.now(),
           time: moment().format("HH:mm"),
           text: action.messageText,
           sender: newState.username,

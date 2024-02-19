@@ -10,6 +10,9 @@ import {
 import { MessagesList } from "../../types";
 import styles from "./styles.css";
 import moment from "moment";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:4000");
 
 export interface Props {
   username: string;
@@ -50,26 +53,36 @@ const Home = (props: Props) => {
     }
   }, [messages]);
 
+  React.useEffect(() => {
+    socket.on("newMessage", newMessage => {
+      sendMessage(newMessage.text, newMessage.sender);
+    });
+
+    socket.on("updateUsername", newUsername => {
+      changeUsername(newUsername);
+    });
+
+    return () => {
+      socket.off("newMessage");
+      socket.off("updateUsername");
+    };
+  }, [sendMessage, changeUsername]);
+
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    changeUsername(event.target.value);
+    const newUsername = event.target.value;
+    changeUsername(newUsername);
+    socket.emit("changeUsername", newUsername);
   };
-  const handleMessageSend = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleMessageSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (messageText) {
       try {
         const currentTime = moment().format("HH:mm");
-        await fetch("/api/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text: messageText,
-            sender: username,
-            time: currentTime,
-          }),
+        socket.emit("newMessage", {
+          text: messageText,
+          sender: username,
+          time: currentTime,
         });
-        await sendMessage(messageText, username);
         setmessageText("");
         setError(null);
       } catch (error) {
@@ -90,7 +103,7 @@ const Home = (props: Props) => {
         ) : null}
         {messages !== null && messages.length
           ? messages.map(message => (
-              <li key={message.text} className={styles.messageItem}>
+              <li key={message.id} className={styles.messageItem}>
                 <div className={styles.messageText}>
                   <div className={styles.messageSender}>{message.sender}</div>
                   {message.text}
