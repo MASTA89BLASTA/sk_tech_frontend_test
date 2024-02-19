@@ -3,7 +3,7 @@
 const moment = require("moment");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const now = moment().format("HH:mm"); // Получаем текущее время при выполнении миграции
+    const now = moment().format("HH:mm"); 
     await queryInterface.createTable("Messages", {
       id: {
         allowNull: false,
@@ -13,7 +13,7 @@ module.exports = {
       },
       time: {
         type: Sequelize.TEXT,
-        defaultValue: now, // Используем полученное время здесь
+        defaultValue: now, 
         allowNull: false,
       },
       sender: {
