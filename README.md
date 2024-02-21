@@ -4,7 +4,7 @@
 
 1. npm i для node_modules в каждую папку проекта client и server
 2. Устанавливаем sequelize `npm i sequelize sequelize-cli pg pg-hstore`
-3. Cоздаём файл `.sequelizerc` в корне проекта
+3. Cоздаём файл `.sequelizerc` в корне проекта ТОЛЬКО ЕСЛИ ЕГО НЕТ
 4. `npx sequelize init`
 5. создаём базу данных `npx sequelize db:create`
 6. Применяем миграции `npx sequelize db:migrate`,
