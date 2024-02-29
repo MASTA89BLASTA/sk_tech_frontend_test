@@ -2,13 +2,19 @@
 
 ## Установка проекта
 
-1. npm i для node_modules в каждую папку проекта client и server
-2. Устанавливаем sequelize `npm i sequelize sequelize-cli pg pg-hstore`
-3. Cоздаём файл `.sequelizerc` в корне проекта ТОЛЬКО ЕСЛИ ЕГО НЕТ
-4. `npx sequelize init`
-5. создаём базу данных `npx sequelize db:create`
-6. Применяем миграции `npx sequelize db:migrate`,
-7. Применяем сиды `npx sequelize db:seed:all`
+1. Открываем терминал в папке server 
+2. Открываем терминал в папке client
+3. npm i для node_modules в каждую папку проекта client и server
+4. переходим в терминал где server 
+5. Устанавливаем sequelize `npm i sequelize sequelize-cli pg pg-hstore`
+6. `npx sequelize init`
+7. создаём базу данных `npx sequelize db:create`
+8. Применяем миграции `npx sequelize db:migrate`,
+9. Применяем сиды `npx sequelize db:seed:all`
+
+## Запуск проекта
+1. Запускаем сервер в терминале папки server `npm run dev`,
+2. Запускаем клиент в терминале папки client `npm run start`,
 
 ## Описание
 
