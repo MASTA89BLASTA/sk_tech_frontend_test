@@ -3,10 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { mainActions } from "../../actions";
 import { AppState } from "../../reducers";
-import {
-  getMainUsername,
-  getMainMessagesList,
-} from "../../selectors/mainSelector";
+import { getMainMessagesList } from "../../selectors/mainSelector";
 import { MessagesList } from "../../types";
 // import styles from "./styles.css";
 import { styled } from "@mui/system";
@@ -26,12 +23,9 @@ const RootContainer = styled("div")({
   flexDirection: "column",
 });
 
-
-
 const MessagesListStyled = styled(List)({
   width: "100%",
   height: "100%",
-  // padding: "14px",
   overflow: "auto",
   margin: "0px",
   boxSizing: "border-box",
@@ -40,7 +34,6 @@ const MessagesListStyled = styled(List)({
     position: "relative",
     margin: "-6px 0",
   },
-
 });
 
 const MessageItem = styled(ListItem)({
@@ -125,34 +118,34 @@ const SendImage = styled("img")({
 });
 
 export interface Props {
-  username: string;
   messages: MessagesList;
 
   getMessagesList: Function;
   sendMessage: Function;
-  changeUsername: Function;
 }
 
 const mapStateToProps = (state: AppState) => ({
   messages: getMainMessagesList(state),
-  username: getMainUsername(state),
+  // username: getMainUsername(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   getMessagesList: () => dispatch(mainActions.mainMessagesListFetch()),
   sendMessage: (messageText: string, username: string) =>
     dispatch(mainActions.mainSendMessage(messageText, username)),
-  changeUsername: (newUsername: string) =>
-    dispatch(mainActions.mainChangeUsername(newUsername)),
+  // changeUsername: (newUsername: string) => dispatch(mainActions.mainChangeUsername(newUsername)),
 });
 
-const Home = (props: Props) => {
-  const { username, messages, getMessagesList, sendMessage, changeUsername } =
-    props;
-  const [messageText, setmessageText] = React.useState("");
+const Home = ({ messages, getMessagesList, sendMessage }: Props) => {
+  const [username, setUsername] = React.useState("аноним");
+  const [messageText, setMessageText] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const messagesListRef = React.useRef(null);
 
+  React.useEffect(() => {
+    const savedName = localStorage.getItem("chat_username");
+    if (savedName) setUsername(savedName);
+  }, []);
   React.useEffect(() => {
     getMessagesList();
   }, []);
@@ -168,23 +161,30 @@ const Home = (props: Props) => {
       sendMessage(newMessage.text, newMessage.sender);
     });
 
-    socket.on("updateUsername", newUsername => {
-      changeUsername(newUsername);
-    });
-
     return () => {
       socket.off("newMessage");
-      socket.off("updateUsername");
     };
-  }, [sendMessage, changeUsername]);
+  }, [sendMessage]);
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newUsername = event.target.value;
-    changeUsername(newUsername);
+    setUsername(newUsername);
+    localStorage.setItem("chat_username", newUsername);
     socket.emit("changeUsername", newUsername);
   };
   const handleMessageSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.stopPropagation();
+    if (!username.trim()) {
+      setError("Введите имя перед отправкой сообщения");
+      return;
+    }
+
+    if (!messageText.trim()) {
+      setError("Нельзя отправить пустое сообщение");
+      return;
+    }
+    
     if (messageText) {
       try {
         const currentTime = moment().format("HH:mm");
@@ -193,7 +193,7 @@ const Home = (props: Props) => {
           sender: username,
           time: currentTime,
         });
-        setmessageText("");
+        setMessageText("");
         setError(null);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -206,9 +206,7 @@ const Home = (props: Props) => {
     <RootContainer>
       <MessagesListStyled ref={messagesListRef}>
         {messages === null ? <NoMessage>Загрузка...</NoMessage> : null}
-        {messages !== null && !messages.length ? (
-          <NoMessage>Нет сообщений</NoMessage>
-        ) : null}
+        {messages !== null && !messages.length ? <NoMessage>Нет сообщений</NoMessage> : null}
         {messages !== null && messages.length
           ? messages.map(message => (
               <MessageItem key={message.id}>
@@ -235,7 +233,7 @@ const Home = (props: Props) => {
         <MessageInput
           value={messageText}
           onChange={event => {
-            setmessageText(event.target.value);
+            setMessageText(event.target.value);
           }}
           placeholder="Введите сообщение"
           autoFocus

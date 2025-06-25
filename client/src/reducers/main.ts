@@ -3,20 +3,17 @@ import {
   MAIN_MESSAGES_LIST_FETCH,
   MAIN_MESSAGES_LIST_SUCCESS,
   MAIN_MESSAGES_LIST_FAILED,
-  MAIN_CHANGE_USERNAME,
   MAIN_SEND_MESSAGE,
   TAction,
 } from "../actions/mainActions";
 import { MessagesList } from "../types";
 
 export type TState = {
-  username: string;
   messagesList: MessagesList | null;
   messengerError: Error | null;
 };
 
 const initialState: TState = {
-  username: "Anonim",
   messagesList: null,
   messengerError: null,
 };
@@ -48,15 +45,10 @@ const main = (state = initialState, action: TAction) => {
           id: Date.now(),
           time: moment().format("HH:mm"),
           text: action.messageText,
-          sender: newState.username,
+          sender: action.sender,
         },
       ];
       newState.messagesList = messageList;
-      return newState;
-    }
-    case MAIN_CHANGE_USERNAME: {
-      const newState = Object.assign({}, state);
-      newState.username = action.newUsername;
       return newState;
     }
     default: {
