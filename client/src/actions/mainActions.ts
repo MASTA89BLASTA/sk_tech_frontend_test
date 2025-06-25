@@ -26,6 +26,7 @@ export type TAction =
   | Readonly<{
       type: "MAIN_SEND_MESSAGE";
       messageText: string;
+      sender: string;
     }>
   | Readonly<{ type: "MAIN_SEND_MESSAGE_SUCCESS" }>
   | Readonly<{
@@ -51,10 +52,6 @@ export default {
   MAIN_SEND_MESSAGE_SUCCESS,
   MAIN_SEND_MESSAGE_FAILED,
 
-  MAIN_CHANGE_USERNAME,
-  MAIN_CHANGE_USERNAME_SUCCESS,
-  MAIN_CHANGE_USERNAME_FAILED,
-
   mainMessagesListFetch: makeActionCreator(MAIN_MESSAGES_LIST_FETCH),
   mainMessagesListSuccess: makeActionCreator(
     MAIN_MESSAGES_LIST_SUCCESS,
@@ -62,14 +59,8 @@ export default {
   ),
   mainMessagesListFailed: makeActionCreator(MAIN_MESSAGES_LIST_FAILED, "error"),
 
-  mainSendMessage: makeActionCreator(MAIN_SEND_MESSAGE, "messageText"),
+  mainSendMessage: makeActionCreator(MAIN_SEND_MESSAGE, "messageText", "sender"),
   mainSendMessageSuccess: makeActionCreator(MAIN_SEND_MESSAGE_SUCCESS),
   mainSendMessageFailed: makeActionCreator(MAIN_SEND_MESSAGE_FAILED, "error"),
 
-  mainChangeUsername: makeActionCreator(MAIN_CHANGE_USERNAME, "newUsername"),
-  mainChangeUsernameSuccess: makeActionCreator(MAIN_CHANGE_USERNAME_SUCCESS),
-  mainChangeUsernameFailed: makeActionCreator(
-    MAIN_CHANGE_USERNAME_FAILED,
-    "error"
-  ),
 };
